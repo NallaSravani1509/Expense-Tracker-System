@@ -1,0 +1,84 @@
+
+# Updated Expense Tracker with Delete Feature
+
+def add_expense():
+    date = input("Enter date (DD-MM-YYYY): ")
+    category = input("Enter category (Food/Travel/Other): ")
+    amount = float(input("Enter amount: "))
+
+    with open("expenses.txt", "a") as file:
+        file.write(f"{date},{category},{amount}\n")
+
+    print("Expense added successfully!\n")
+
+
+def view_expenses():
+    try:
+        with open("expenses.txt", "r") as file:
+            print("\nAll Expenses:")
+            lines = file.readlines()
+            for index, line in enumerate(lines, start=1):
+                date, category, amount = line.strip().split(",")
+                print(f"{index}. Date: {date} | Category: {category} | Amount: ₹{amount}")
+    except FileNotFoundError:
+        print("No expenses found.\n")
+
+
+def delete_expense():
+    try:
+        with open("expenses.txt", "r") as file:
+            lines = file.readlines()
+
+        if not lines:
+            print("No expenses to delete.\n")
+            return
+
+        view_expenses()
+        choice = int(input("Enter expense number to delete: "))
+
+        if 1 <= choice <= len(lines):
+            lines.pop(choice - 1)
+            with open("expenses.txt", "w") as file:
+                file.writelines(lines)
+            print("Expense deleted successfully!\n")
+        else:
+            print("Invalid number!\n")
+
+    except FileNotFoundError:
+        print("No expenses found.\n")
+
+
+def total_expense():
+    total = 0
+    try:
+        with open("expenses.txt", "r") as file:
+            for line in file:
+                total += float(line.strip().split(",")[2])
+        print(f"\nTotal Expense: ₹{total}\n")
+    except FileNotFoundError:
+        print("No expenses found.\n")
+
+
+while True:
+    print("====== Expense Tracker ======")
+    print("1. Add Expense")
+    print("2. View Expenses")
+    print("3. Delete Expense")
+    print("4. Show Total Expense")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        add_expense()
+    elif choice == "2":
+        view_expenses()
+    elif choice == "3":
+        delete_expense()
+    elif choice == "4":
+        total_expense()
+    elif choice == "5":
+        print("Thank you for using Expense Tracker!")
+        break
+    else:
+        print("Invalid choice! Try again.\n")
